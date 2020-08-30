@@ -51,6 +51,7 @@ function create_leelaz () {
         log('start engine:', JSON.stringify(arg && [leelaz_command, ...leelaz_args]))
         leelaz_process = require('child_process').spawn(leelaz_command, leelaz_args, opt)
         leelaz_process.stdout.on('data', each_line(stdout_reader))
+        //leelaz_process.stdout.on('data', each_line(reader))
         leelaz_process.stderr.on('data', each_line(reader))
         set_error_handler(leelaz_process, () => restart_handler(startup_log))
         command_queue = []; last_command_id = last_response_id = -1
@@ -324,14 +325,20 @@ function create_leelaz () {
 
     const stdout_main_reader = (s, strict) => {
         const m = s.match(/^([=?])(\d+)(\s+)?(.*)/)
-        if (!m) {assuming_broken_GTP && !strict && suggest_reader_maybe(s); return false}
-        const ok = (m[1] === '='), id = last_response_id = to_i(m[2]), result = m[4]
-        const on_response = on_response_for_id[id]; delete on_response_for_id[id]
-        const multiline_p = on_response &&
-              on_response(ok, result) === expecting_multiline_response
-        const on_continued = (ok && multiline_p) ? on_response : do_nothing
-        current_stdout_reader = make_rest_reader(on_continued)
-        return true
+        if (m) 
+        {
+            const ok = (m[1] === '='), id = last_response_id = to_i(m[2]), result = m[4]
+            const on_response = on_response_for_id[id]; delete on_response_for_id[id]
+            const multiline_p = on_response &&
+                on_response(ok, result) === expecting_multiline_response
+            const on_continued = (ok && multiline_p) ? on_response : do_nothing
+            current_stdout_reader = make_rest_reader(on_continued)
+            return true
+        }
+        else {
+            main_reader(s);
+        }
+        //{assuming_broken_GTP && !strict && suggest_reader_maybe(s); return false}
     }
 
     current_stdout_reader = stdout_main_reader

@@ -854,8 +854,10 @@ function stop_auto_analyze() {auto_analysis_signed_visits = Infinity}
 function auto_analyzing() {return auto_analysis_signed_visits < Infinity}
 function auto_analysis_progress() {
     return !auto_analyzing() ? -1 :
-        (!R.suggest || !R.suggest[0]) ? 0 :
-        R.suggest[0].visits / auto_analysis_visits()
+        (!R.suggest) ? 0 :
+        R.suggest.reduce(function(maxv, r) {
+            return maxv>r.visits ? maxv : r.visits;
+        }, 0) / auto_analysis_visits()
 }
 function auto_analysis_visits() {return Math.abs(auto_analysis_signed_visits)}
 function backward_auto_analysis_p() {return auto_analysis_signed_visits < 0}
