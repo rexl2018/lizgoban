@@ -7,7 +7,7 @@
   "main": "./src/main.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kaorahi/lizgoban"
+    "url": "git+https://github.com/kaorahi/lizgoban.git"
   },
   "dependencies": {
     "@sabaki/sgf": "^3.4.7",
@@ -76,5 +76,10 @@
     "start": "electron .",
     "build_lin": "electron-builder -l --x64",
     "build_win": "electron-builder -w --x64"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/kaorahi/lizgoban/issues"
+  },
+  "homepage": "https://github.com/kaorahi/lizgoban#readme",
+  "keywords": []
 }
